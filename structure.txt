@@ -1,0 +1,304 @@
+.
+├── fresh_venv
+│   ├── __pycache__
+│   │   └── test_celery.cpython-39.pyc
+│   ├── bin
+│   │   ├── Activate.ps1
+│   │   ├── activate
+│   │   ├── activate.csh
+│   │   ├── activate.fish
+│   │   ├── celery
+│   │   ├── pip
+│   │   ├── pip3
+│   │   ├── pip3.9
+│   │   ├── python -> /Users/peterzheng/opt/anaconda3/bin/python
+│   │   ├── python3 -> python
+│   │   └── python3.9 -> python
+│   ├── include
+│   ├── lib
+│   │   └── python3.9
+│   ├── pyvenv.cfg
+│   └── test_celery.py
+├── my-app
+│   ├── README.md
+│   ├── Sway_Dashboard.code-workspace
+│   ├── app
+│   │   └── globals.css
+│   ├── components.json
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── node_modules
+│   │   ├── @alloc
+│   │   ├── @ampproject
+│   │   ├── @babel
+│   │   ├── @esbuild
+│   │   ├── @eslint
+│   │   ├── @eslint-community
+│   │   ├── @floating-ui
+│   │   ├── @humanfs
+│   │   ├── @humanwhocodes
+│   │   ├── @isaacs
+│   │   ├── @jridgewell
+│   │   ├── @nodelib
+│   │   ├── @pkgjs
+│   │   ├── @radix-ui
+│   │   ├── @rollup
+│   │   ├── @tailwindcss
+│   │   ├── @tanstack
+│   │   ├── @types
+│   │   ├── @typescript-eslint
+│   │   ├── @vitejs
+│   │   ├── acorn
+│   │   ├── acorn-jsx
+│   │   ├── ajv
+│   │   ├── ansi-regex
+│   │   ├── ansi-styles
+│   │   ├── any-promise
+│   │   ├── anymatch
+│   │   ├── arg
+│   │   ├── argparse
+│   │   ├── aria-hidden
+│   │   ├── autoprefixer
+│   │   ├── balanced-match
+│   │   ├── binary-extensions
+│   │   ├── brace-expansion
+│   │   ├── braces
+│   │   ├── browserslist
+│   │   ├── callsites
+│   │   ├── camelcase-css
+│   │   ├── caniuse-lite
+│   │   ├── chalk
+│   │   ├── chokidar
+│   │   ├── class-variance-authority
+│   │   ├── clsx
+│   │   ├── color-convert
+│   │   ├── color-name
+│   │   ├── commander
+│   │   ├── concat-map
+│   │   ├── convert-source-map
+│   │   ├── cookie
+│   │   ├── cross-spawn
+│   │   ├── cssesc
+│   │   ├── csstype
+│   │   ├── debug
+│   │   ├── deep-is
+│   │   ├── detect-libc
+│   │   ├── detect-node-es
+│   │   ├── didyoumean
+│   │   ├── dlv
+│   │   ├── eastasianwidth
+│   │   ├── electron-to-chromium
+│   │   ├── emoji-regex
+│   │   ├── enhanced-resolve
+│   │   ├── esbuild
+│   │   ├── escalade
+│   │   ├── escape-string-regexp
+│   │   ├── eslint
+│   │   ├── eslint-plugin-react-hooks
+│   │   ├── eslint-plugin-react-refresh
+│   │   ├── eslint-scope
+│   │   ├── eslint-visitor-keys
+│   │   ├── espree
+│   │   ├── esquery
+│   │   ├── esrecurse
+│   │   ├── estraverse
+│   │   ├── esutils
+│   │   ├── fast-deep-equal
+│   │   ├── fast-glob
+│   │   ├── fast-json-stable-stringify
+│   │   ├── fast-levenshtein
+│   │   ├── fastq
+│   │   ├── file-entry-cache
+│   │   ├── fill-range
+│   │   ├── find-up
+│   │   ├── flat-cache
+│   │   ├── flatted
+│   │   ├── foreground-child
+│   │   ├── fraction.js
+│   │   ├── fsevents
+│   │   ├── function-bind
+│   │   ├── gensync
+│   │   ├── get-nonce
+│   │   ├── glob
+│   │   ├── glob-parent
+│   │   ├── globals
+│   │   ├── graceful-fs
+│   │   ├── graphemer
+│   │   ├── has-flag
+│   │   ├── hasown
+│   │   ├── ignore
+│   │   ├── import-fresh
+│   │   ├── imurmurhash
+│   │   ├── is-binary-path
+│   │   ├── is-core-module
+│   │   ├── is-extglob
+│   │   ├── is-fullwidth-code-point
+│   │   ├── is-glob
+│   │   ├── is-number
+│   │   ├── isexe
+│   │   ├── jackspeak
+│   │   ├── jiti
+│   │   ├── js-tokens
+│   │   ├── js-yaml
+│   │   ├── jsesc
+│   │   ├── json-buffer
+│   │   ├── json-schema-traverse
+│   │   ├── json-stable-stringify-without-jsonify
+│   │   ├── json5
+│   │   ├── keyv
+│   │   ├── levn
+│   │   ├── lightningcss
+│   │   ├── lightningcss-darwin-arm64
+│   │   ├── lilconfig
+│   │   ├── lines-and-columns
+│   │   ├── locate-path
+│   │   ├── lodash.merge
+│   │   ├── lru-cache
+│   │   ├── lucide-react
+│   │   ├── merge2
+│   │   ├── micromatch
+│   │   ├── minimatch
+│   │   ├── minipass
+│   │   ├── ms
+│   │   ├── mz
+│   │   ├── nanoid
+│   │   ├── natural-compare
+│   │   ├── node-releases
+│   │   ├── normalize-path
+│   │   ├── normalize-range
+│   │   ├── object-assign
+│   │   ├── object-hash
+│   │   ├── optionator
+│   │   ├── p-limit
+│   │   ├── p-locate
+│   │   ├── package-json-from-dist
+│   │   ├── parent-module
+│   │   ├── path-exists
+│   │   ├── path-key
+│   │   ├── path-parse
+│   │   ├── path-scurry
+│   │   ├── picocolors
+│   │   ├── picomatch
+│   │   ├── pify
+│   │   ├── pirates
+│   │   ├── postcss
+│   │   ├── postcss-import
+│   │   ├── postcss-js
+│   │   ├── postcss-load-config
+│   │   ├── postcss-nested
+│   │   ├── postcss-selector-parser
+│   │   ├── postcss-value-parser
+│   │   ├── prelude-ls
+│   │   ├── punycode
+│   │   ├── queue-microtask
+│   │   ├── react
+│   │   ├── react-dom
+│   │   ├── react-refresh
+│   │   ├── react-remove-scroll
+│   │   ├── react-remove-scroll-bar
+│   │   ├── react-router
+│   │   ├── react-router-dom
+│   │   ├── react-style-singleton
+│   │   ├── read-cache
+│   │   ├── readdirp
+│   │   ├── resolve
+│   │   ├── resolve-from
+│   │   ├── reusify
+│   │   ├── rollup
+│   │   ├── run-parallel
+│   │   ├── scheduler
+│   │   ├── semver
+│   │   ├── set-cookie-parser
+│   │   ├── shebang-command
+│   │   ├── shebang-regex
+│   │   ├── signal-exit
+│   │   ├── source-map-js
+│   │   ├── string-width
+│   │   ├── string-width-cjs
+│   │   ├── strip-ansi
+│   │   ├── strip-ansi-cjs
+│   │   ├── strip-json-comments
+│   │   ├── sucrase
+│   │   ├── supports-color
+│   │   ├── supports-preserve-symlinks-flag
+│   │   ├── tailwind-merge
+│   │   ├── tailwindcss
+│   │   ├── tailwindcss-animate
+│   │   ├── tapable
+│   │   ├── thenify
+│   │   ├── thenify-all
+│   │   ├── to-regex-range
+│   │   ├── ts-api-utils
+│   │   ├── ts-interface-checker
+│   │   ├── tslib
+│   │   ├── turbo-stream
+│   │   ├── type-check
+│   │   ├── typescript
+│   │   ├── typescript-eslint
+│   │   ├── undici-types
+│   │   ├── update-browserslist-db
+│   │   ├── uri-js
+│   │   ├── use-callback-ref
+│   │   ├── use-sidecar
+│   │   ├── util-deprecate
+│   │   ├── vite
+│   │   ├── which
+│   │   ├── word-wrap
+│   │   ├── wrap-ansi
+│   │   ├── wrap-ansi-cjs
+│   │   ├── yallist
+│   │   ├── yaml
+│   │   └── yocto-queue
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── pnpm-lock.yaml
+│   ├── postcss.config.js
+│   ├── public
+│   │   └── vite.svg
+│   ├── src
+│   │   ├── App.css
+│   │   ├── App.tsx
+│   │   ├── assets
+│   │   ├── components
+│   │   ├── index.css
+│   │   ├── lib
+│   │   ├── main.tsx
+│   │   ├── pages
+│   │   ├── types
+│   │   └── vite-env.d.ts
+│   ├── tailwind.config.js
+│   ├── tally-bamboo-integration
+│   │   ├── Dockerfile
+│   │   ├── __pycache__
+│   │   ├── app
+│   │   ├── app.py
+│   │   ├── docker-compose.yml
+│   │   ├── init_db.py
+│   │   ├── requirements.txt
+│   │   ├── tests
+│   │   └── venv
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.ts
+├── structure.txt
+└── venv
+    ├── bin
+    │   ├── Activate.ps1
+    │   ├── activate
+    │   ├── activate.csh
+    │   ├── activate.fish
+    │   ├── celery
+    │   ├── pip
+    │   ├── pip3
+    │   ├── pip3.13
+    │   ├── python -> python3.13
+    │   ├── python3 -> python3.13
+    │   └── python3.13 -> /opt/homebrew/opt/python@3.13/bin/python3.13
+    ├── include
+    │   └── python3.13
+    ├── lib
+    │   └── python3.13
+    └── pyvenv.cfg
+
+249 directories, 53 files
