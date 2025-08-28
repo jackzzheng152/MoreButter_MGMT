@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.routes import webhooks, employees, forms, compensation, bamboo_webhooks, admin, time_punch, time_off, tally_routes, pay_periods, platforms, file_upload, orders
+from app.api.routes import webhooks, employees, forms, compensation, admin, time_punch, time_off, tally_routes, pay_periods, platforms, file_upload, orders
 
 # Initialize the main router
 api_router = APIRouter()
@@ -9,7 +9,7 @@ api_router.include_router(webhooks.router, prefix="/webhook", tags=["Webhooks"])
 api_router.include_router(employees.router, prefix="/employees", tags=["Employees"])
 api_router.include_router(forms.router, prefix="/forms", tags=["Forms"])
 api_router.include_router(compensation.router, prefix="/compensation", tags=["Compensation"])
-api_router.include_router(bamboo_webhooks.router, prefix="/bamboo-webhooks", tags=["Webhooks"])
+# BambooHR webhooks removed - direct to 7shifts
 api_router.include_router(admin.router, prefix="/admin", tags=["Admin"])
 api_router.include_router(time_punch.router, prefix="/time-punch", tags=["Time Punch"])
 api_router.include_router(time_off.router, prefix="/time-off", tags=["Time Off"])

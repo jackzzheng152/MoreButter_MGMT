@@ -29,7 +29,7 @@ def get_compensation_logs(db: Session = Depends(deps.get_db)):
             "previous_compensation": log.previous_compensation,
             "new_compensation": log.new_compensation,
             "increase_amount": log.increase_amount,
-            "bamboo_hr_updated": log.bamboo_hr_updated,
+            "bamboo_hr_updated": False,  # No longer updating BambooHR
             "created_at": log.created_at
         })
     
@@ -57,7 +57,7 @@ def get_employee_compensation_logs(employee_id: int, db: Session = Depends(deps.
             "form_name": form.form_name if form else "Manual Update",
             "previous_compensation": log.previous_compensation,
             "new_compensation": log.new_compensation,
-            "bamboo_hr_updated": log.bamboo_hr_updated,
+            "bamboo_hr_updated": False,  # No longer updating BambooHR
             "created_at": log.created_at,
             "effective_date": log.effective_date,
             "rate_amount": log.rate_amount,

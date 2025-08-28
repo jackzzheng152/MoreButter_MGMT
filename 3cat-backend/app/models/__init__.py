@@ -1,7 +1,8 @@
+from app.database import Base
 from app.models.employee import Employee
 from app.models.form import Form
 from app.models.submission import Submission
-from app.models.bamboo_hr_log import BambooHRLog
+
 from app.models.compensation_log import CompensationLog
 from app.models.job_level import JobLevel
 from app.models.seven_shifts_log import SevenShiftsLog

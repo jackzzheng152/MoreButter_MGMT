@@ -7,9 +7,8 @@ from app.models.employee import Employee
 from app.models.form import Form
 from app.models.submission import Submission
 from app.services.tally import extract_email_from_submission, extract_score_from_submission
-from app.services.bamboo_hr import update_test_results
+# BambooHR integration removed - direct to 7shifts
 from app.services.compensation import process_compensation_update
-from app.services.bamboo_hr import get_employee_compensation
 from app.services.tally import extract_time_and_quiz_name
 from app.models.job_level import JobLevel
 from app.config import logger
@@ -99,40 +98,19 @@ async def process_tally_submission(submission: TallySubmission, db: Session = De
             passed=passed,
             submission_data=submission.dict(),
             processed=False,
-            bamboo_hr_updated=False,
             compensation_updated=False
         )
         db.add(new_submission)
         db.flush()
         
         # Initialize response data
-        bamboo_updated = False
         compensation_updated = False
 
         quiz_date, quiz_name = extract_time_and_quiz_name(submission.data)
         
-        # Always update test results in BambooHR
-        try:
-            
-            bamboo_get_compensation = await get_employee_compensation(
-                employee.bamboo_hr_id,
-                db,
-                employee.employee_id
-            )
-            
-            bamboo_updated = await update_test_results(
-                employee.bamboo_hr_id,
-                score,
-                db,
-                employee.employee_id,
-                new_submission.id,
-                quiz_name=form.form_name,
-                quiz_date=quiz_date
-            )
-        except Exception as e:
-            logger.exception(f"Error updating test results in BambooHR: {str(e)}")
-            
-        #update compensation if the employee passed
+        # BambooHR integration removed - direct to 7shifts
+        
+        # Update compensation if the employee passed
         if employee and passed and form.job_level_code and not already_passed:
             try:
                 # Check if this is a higher level test
@@ -178,18 +156,7 @@ async def process_tally_submission(submission: TallySubmission, db: Session = De
                     # Format date as YYYY-MM-DD
                     effective_date_str = effective_date.strftime("%Y-%m-%d")
 
-                    matching_row_id = None
-                    root = ET.fromstring(bamboo_get_compensation)
-                    # Iterate and search
-                    for row in root.findall('row'):
-                        for field in row.findall('field'):
-                            if field.attrib.get('id') == 'startDate' and field.text == effective_date_str:
-                                matching_row_id = row.attrib.get('id')
-                                break
-                        if matching_row_id:
-                            break
-                    
-                        
+                    # BambooHR integration removed - direct compensation update
                     compensation_updated = await process_compensation_update(
                         employee.employee_id,
                         form.id,
@@ -198,7 +165,7 @@ async def process_tally_submission(submission: TallySubmission, db: Session = De
                         db,
                         quiz_date,
                         quiz_name,
-                        matching_row_id,
+                        None,  # No matching_row_id needed
                         effective_date_str
                     )
             except Exception as e:
@@ -207,7 +174,6 @@ async def process_tally_submission(submission: TallySubmission, db: Session = De
 
         # Update submission to mark as processed
         new_submission.processed = True
-        new_submission.bamboo_hr_updated = bamboo_updated
         new_submission.compensation_updated = compensation_updated
         db.commit()
         
@@ -216,7 +182,6 @@ async def process_tally_submission(submission: TallySubmission, db: Session = De
             "message": "Submission processed successfully",
             "submission_id": new_submission.id,
             "passed": passed,
-            "bamboo_updated": bamboo_updated,
             "compensation_updated": compensation_updated
         }
     

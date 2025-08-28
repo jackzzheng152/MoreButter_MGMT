@@ -6,7 +6,7 @@ from app.models.form import Form
 from app.models.submission import Submission
 from app.models.compensation_log import CompensationLog
 from app.models.job_level import JobLevel
-from app.services.bamboo_hr import get_employee_compensation, update_compensation
+# BambooHR integration removed - direct to 7shifts
 from app.config import logger
 from app.models.job_title import JobTitle
 from app.models.location import Location
@@ -115,12 +115,10 @@ async def process_compensation_update(
            
             current_compensation = employee.current_compensation
    
+            # Current compensation should be available in employee record
             if current_compensation is None:
-                current_compensation = await get_employee_compensation(
-                    employee.bamboo_hr_id,
-                    db,
-                    employee.employee_id
-                )
+                logger.warning(f"No current compensation found for employee {employee.employee_id}")
+                current_compensation = 0.0
     
             # Update employee record
             pending_change = PendingCompensationChange(
@@ -160,40 +158,24 @@ async def manual_compensation_update(
         return False
     
     try:
-        # Get current compensation from record or BambooHR
-        current_compensation = employee.current_compensation
-        if current_compensation is None:
-            current_compensation = await get_employee_compensation(
-                employee.bamboo_hr_id,
-                db,
-                employee.employee_id
-            )
+        # Get current compensation from employee record
+        current_compensation = employee.current_compensation or 0.0
         
-        # Update compensation in BambooHR
-        bamboo_updated = await update_compensation(
-            employee.bamboo_hr_id,
-            new_compensation,
-            db,
-            employee.employee_id
+        # Update employee record directly
+        employee.current_compensation = new_compensation
+        
+        # Create compensation log entry
+        compensation_log = CompensationLog(
+            employee_id=employee.employee_id,
+            previous_compensation=current_compensation,
+            new_compensation=new_compensation,
+            increase_amount=new_compensation - current_compensation,
+            # bamboo_hr_updated field removed
         )
+        db.add(compensation_log)
         
-        if bamboo_updated:
-            # Update employee record
-            employee.current_compensation = new_compensation
-            
-            # Create compensation log entry
-            compensation_log = CompensationLog(
-                employee_id=employee.employee_id,
-                previous_compensation=current_compensation,
-                new_compensation=new_compensation,
-                increase_amount=new_compensation - (current_compensation or 0),
-                bamboo_hr_updated=True
-            )
-            db.add(compensation_log)
-            
-            db.commit()
-            return True
-        return False
+        db.commit()
+        return True
     
     except Exception as e:
         logger.exception(f"Error processing manual compensation update: {str(e)}")

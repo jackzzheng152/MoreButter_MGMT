@@ -350,7 +350,7 @@ async def process_approved_changes(db: Session) -> int:
     Returns:
         Number of changes processed
     """
-    from app.services.bamboo_hr import update_compensation
+    # BambooHR integration removed - direct to 7shifts
     from app.models.compensation_log import CompensationLog
     
     changes = db.query(PendingCompensationChange).filter(
@@ -377,16 +377,8 @@ async def process_approved_changes(db: Session) -> int:
             if change.title_id:
                 employee.current_title_id = change.title_id
             
-            # Call your existing update_compensation function for BambooHR
-            bamboo_updated = await update_compensation(
-                employee.bamboo_hr_id,
-                change.new_compensation,
-                change.position_name,
-                db,
-                employee.employee_id,
-                submission_id=None,  # These could be set if needed
-                effective_date_str=change.effective_date.strftime("%Y-%m-%d") if change.effective_date else None
-            )
+            # BambooHR integration removed - direct database update only
+            bamboo_updated = True  # No longer updating BambooHR
             
             # Create compensation log entry
             log_entry = CompensationLog(

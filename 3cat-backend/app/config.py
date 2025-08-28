@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost/sway_dashboard")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost/Bafang_dashboard")
     BAMBOO_HR_API_KEY: str = os.getenv("BAMBOO_HR_API_KEY", "")
 
     BAMBOO_HR_SUBDOMAIN: str = os.getenv("BAMBOO_HR_SUBDOMAIN", "")

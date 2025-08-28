@@ -15,12 +15,10 @@ class Submission(Base):
     passed = Column(Boolean, nullable=True)
     submission_data = Column(JSONB, nullable=False)
     processed = Column(Boolean, default=False)
-    bamboo_hr_updated = Column(Boolean, default=False)
     compensation_updated = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     form = relationship("Form", back_populates="submissions")
     employee = relationship("Employee", back_populates="submissions")
-    bamboo_logs = relationship("BambooHRLog", back_populates="submission")
     compensation_logs = relationship("CompensationLog", back_populates="submission")

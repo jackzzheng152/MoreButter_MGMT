@@ -56,6 +56,7 @@ import { EmployeeWithUIFields } from "@/features/team/types/employee";
 import { z } from "zod";
 import { removeFromBambooHR, removeFrom7Shifts } from "../api/platformAPI";
 import { useSort, sortData } from "@/lib/sortUtils";
+import { AddTeamMemberDialog } from "./add-team-member-dialog";
 
 interface ToastState {
   title: string;
@@ -119,6 +120,7 @@ export function TeamManagement() {
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [showInactive, setShowInactive] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
+  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
 
   // State for edited values
   const [editedValues, setEditedValues] = useState({
@@ -145,6 +147,12 @@ export function TeamManagement() {
   } = useTeamData();
 
   const { mutate: updateEmployeeMutation } = useUpdateEmployee();
+
+  // Handle employee added
+  const handleEmployeeAdded = () => {
+    // Refresh the team data
+    window.location.reload(); // Simple refresh for now, could be optimized with refetch
+  };
 
   // Helper functions using useMemo for performance
   const getJobTitleName = useMemo(() => {
@@ -734,10 +742,7 @@ export function TeamManagement() {
                 <>Show Inactive <EyeOff className="h-4 w-4" /></>
               )}
             </Button>
-            <Button onClick={() => {
-              // Handle add member - you'll need to implement this
-              console.log("Add member clicked");
-            }}>
+            <Button onClick={() => setIsAddMemberDialogOpen(true)}>
               <UserPlus className="mr-2 h-4 w-4" />
               Add Team Member
             </Button>
@@ -1125,6 +1130,17 @@ export function TeamManagement() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Add Team Member Dialog */}
+      {isAddMemberDialogOpen && (
+        <AddTeamMemberDialog
+          open={isAddMemberDialogOpen}
+          onOpenChange={setIsAddMemberDialogOpen}
+          onEmployeeAdded={handleEmployeeAdded}
+          jobTitles={jobTitles}
+          locations={locations}
+        />
+      )}
     </div>
   );
 }

@@ -13,7 +13,7 @@ Base.metadata.create_all(bind=engine)
 logger.info("Database initialization complete.")
 
 # Create FastAPI app
-app = FastAPI(title="Tally.so BambooHR Integration")
+app = FastAPI(title="3Cat Management System")
 
 # Configure CORS origins
 origins = [

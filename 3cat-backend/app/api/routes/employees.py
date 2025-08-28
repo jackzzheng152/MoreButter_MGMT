@@ -7,7 +7,7 @@ from app.models.employee import Employee
 from app.models.submission import Submission
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate, Employee as EmployeeSchema
 from app.schemas.submission import CompensationUpdate
-from app.schemas.bamboo_webhook import JobInfoUpdateRequest
+# BambooHR webhook schemas removed
 from app.services.compensation import manual_compensation_update
 from app.services.employee import update_employee_service, create_employee_service
 from app.config import logger
@@ -15,9 +15,7 @@ from app.models.location import Location
 from app.schemas.employee import EmployeeResponse
 from app.services.seven_shifts import update_7shifts_user
 from app.schemas.employee import MatchEmployeesRequest
-from app.services.bamboo_hr import update_jobinfo
-from app.schemas.bamboo_webhook import EmploymentStatusUpdateRequest
-from app.services.bamboo_hr import update_employment_status
+# BambooHR integration removed - direct to 7shifts
 router = APIRouter()
 
 
@@ -27,7 +25,7 @@ async def create_employee(
     db: Session = Depends(deps.get_db)
 ):
     """Create a new employee record"""
-    db_employee = await create_employee_service(employee.dict(), db)
+    db_employee = await create_employee_service(employee, db)
     return {"id": db_employee.employee_id, "message": "Employee created successfully"}
 
 @router.get("", response_model=List[Dict[str, Any]])
@@ -52,7 +50,6 @@ def list_employees(db: Session = Depends(deps.get_db)):
             "punch_id": employee.punch_id,
             "sevenshift_id": employee.sevenshift_id,
             "gusto_id": employee.gusto_id,
-            "bamboo_hr_id": employee.bamboo_hr_id,
             "status": employee.status
         })
     
@@ -114,7 +111,7 @@ def get_employee(employee_id: int, db: Session = Depends(deps.get_db)):
     return {
         "id": employee.employee_id,
         "email": employee.email,
-        "bamboo_hr_id": employee.bamboo_hr_id,
+                    # bamboo_hr_id field removed
         "first_name": employee.first_name,
         "last_name": employee.last_name,
         "department": employee.department,
@@ -249,7 +246,7 @@ async def get_employees(db: Session = Depends(deps.get_db)):
         "last_name": "User",
         "department": "Test Dept",
         "current_compensation": 20.0,
-        "bamboo_hr_id": "BHR-123",
+        # bamboo_hr_id field removed
         "sevenshift_id": "7S-456",
         "gusto_id": "GUS-789",
         "punch_id": "PUNCH-321",
@@ -258,81 +255,44 @@ async def get_employees(db: Session = Depends(deps.get_db)):
         
     ]
 
-@router.post("/employees/{employee_id}/job-info")
-async def update_employee_job_info(
-    employee_id: int,
-    job_info: JobInfoUpdateRequest = Body(...),
-    db: Session = Depends(deps.get_db)
-):
-    """Update employee job information in BambooHR"""
-    
-    # Fetch employee to get bamboo_hr_id
-    employee = db.query(Employee).filter(Employee.employee_id == employee_id).first()
-    if not employee:
-        raise HTTPException(status_code=404, detail="Employee not found")
-    
-    if not employee.bamboo_hr_id:
-        raise HTTPException(status_code=400, detail="Employee does not have a BambooHR ID")
-    
-    # Set effective date to today if not provided
-    effective_date_str = job_info.effective_date
-    
-    # Call the update_jobinfo function
-    success = await update_jobinfo(
-        bamboo_hr_id=employee.bamboo_hr_id,
-        db=db,
-        employee_id=employee_id,
-        submission_id=job_info.submission_id,
-        matching_row_id=job_info.matching_row_id,
-        effective_date_str=effective_date_str,
-        location=job_info.location,
-        department=job_info.department,
-        division=job_info.division,
-        job_title=job_info.job_title,
-        reports_to=job_info.reports_to,
-        reason=job_info.reason
-    )
-    
-    if not success:
-        raise HTTPException(status_code=500, detail="Failed to update job information in BambooHR")
-    
-    return {"message": "Job information updated successfully"}
+# BambooHR job info update route removed - direct to 7shifts
 
-@router.post("/employees/{employee_id}/employment-status")
-async def update_employee_employment_status(
-    employee_id: int,
-    employment_status: EmploymentStatusUpdateRequest = Body(...),
-    db: Session = Depends(deps.get_db)
-):
-    """Update employee employment status in BambooHR"""
+# BambooHR employment status update route removed - direct to 7shifts
+# @router.post("/employees/{employee_id}/employment-status")
+# async def update_employee_employment_status(
+#     employee_id: int,
+#     employment_status: EmploymentStatusUpdateRequest = Body(...),
+#     db: Session = Depends(deps.get_db)
+# ):
+    # """Update employee employment status in BambooHR"""
     
-    # Fetch employee to get bamboo_hr_id
-    employee = db.query(Employee).filter(Employee.employee_id == employee_id).first()
-    if not employee:
-        raise HTTPException(status_code=404, detail="Employee not found")
+    # # Fetch employee to get bamboo_hr_id
+    # employee = db.query(Employee).filter(Employee.employee_id == employee_id).first()
+    # if not employee:
+    #     raise HTTPException(status_code=404, detail="Employee not found")
     
-    if not employee.bamboo_hr_id:
-        raise HTTPException(status_code=400, detail="Employee does not have a BambooHR ID")
+    # if not employee.bamboo_hr_id:
+    #     raise HTTPException(status_code=400, detail="Employee does not have a BambooHR ID")
     
-    # Set status date to today if not provided
-    status_date_str = employment_status.status_date
+    # # Set status date to today if not provided
+    # status_date_str = employment_status.status_date
     
-    # Call the update_employment_status function
-    success = await update_employment_status(
-        bamboo_hr_id=employee.bamboo_hr_id,
-        db=db,
-        employee_id=employee_id,
-        submission_id=employment_status.submission_id,
-        status_date=status_date_str,
-        employment_status=employment_status.employment_status,
-        comment=employment_status.comment,
-        termination_reason=employment_status.termination_reason,
-        termination_type=employment_status.termination_type,
-        eligible_for_rehire=employment_status.eligible_for_rehire,
-        termination_regrettable=employment_status.termination_regrettable
-    )
+    # # Call the update_employment_status function
+    # success = await update_employment_status(
+    #     bamboo_hr_id=employee.bamboo_hr_id,
+    #     db=db,
+    #     employee_id=employee_id,
+    #     submission_id=employment_status.submission_id,
+    #     status_date=status_date_str,
+    #     employment_status=employment_status.employment_status,
+    #     comment=employment_status.comment,
+    #     termination_reason=employment_status.termination_reason,
+    #     termination_type=employment_status.termination_type,
+    #     eligible_for_rehire=employment_status.eligible_for_rehire,
+    #     termination_regrettable=employment_status.termination_regrettable
+    # )
     
-    if not success:
-        raise HTTPException(status_code=500, detail="Failed to update employment status in BambooHR")
+    # if not success:
+    #     raise HTTPException(status_code=500, detail="Failed to update employment status in BambooHR")
     
-    return {"message": "Employment status updated successfully"}
+    # return {"message": "Employment status updated successfully"}

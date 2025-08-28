@@ -9,10 +9,8 @@ from app.models.job_level import JobLevel
 from app.models.job_title import JobTitle
 from app.models.location import Location
 from app.config import logger
-from app.services.bamboo_hr import update_job_info
+# BambooHR integration removed - direct to 7shifts
 from app.tasks.celery_app import celery_app  # Add this import
-from app.services.bamboo_hr import update_employment_status
-from app.services.bamboo_hr import update_jobinfo
 
 
 

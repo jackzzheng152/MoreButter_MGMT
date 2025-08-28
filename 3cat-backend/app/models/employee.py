@@ -8,7 +8,6 @@ class Employee(Base):
     
     employee_id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, nullable=False, index=True)
-    bamboo_hr_id = Column(String, unique=True, nullable=False, index=True)
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
     department = Column(String, nullable=True)
@@ -29,7 +28,6 @@ class Employee(Base):
 
     #relationships
     submissions = relationship("Submission", back_populates="employee")
-    bamboo_logs = relationship("BambooHRLog", back_populates="employee")
     compensation_logs = relationship("CompensationLog", back_populates="employee")
     seven_shifts_logs = relationship("SevenShiftsLog", back_populates="employee")
     pending_changes = relationship("PendingCompensationChange", back_populates="employee")

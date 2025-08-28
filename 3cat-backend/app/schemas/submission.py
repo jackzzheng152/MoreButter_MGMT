@@ -17,7 +17,6 @@ class Submission(SubmissionBase):
     score: Optional[float]
     passed: Optional[bool]
     processed: bool
-    bamboo_hr_updated: bool
     compensation_updated: bool
     created_at: datetime
     

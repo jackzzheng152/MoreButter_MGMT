@@ -16,7 +16,7 @@ class CompensationLog(Base):
     new_compensation = Column(Float, nullable=True)
     rate_amount = Column(Float, nullable=True)
     increase_amount = Column(Float, nullable=True)
-    bamboo_hr_updated = Column(Boolean, default=False)
+    # bamboo_hr_updated field removed - no longer updating BambooHR
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     effective_date = Column(DateTime(timezone=True), nullable=True)
     employee = relationship("Employee", back_populates="compensation_logs")

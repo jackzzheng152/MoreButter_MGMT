@@ -45,35 +45,31 @@ def log_seven_shifts_creation(
     
 
 
-async def map_bamboo_department_to_7shifts(bamboo_department: str, employee_location: str, db: Session) -> List[int]:
+async def map_department_to_7shifts(department: str, location_id: int, db: Session) -> List[int]:
     """
-    Map BambooHR department to 7shifts department IDs, using store-specific mappings from the database
+    Map department to 7shifts department IDs, using location-specific mappings from the database
     """
     default_dept_ids = [668246]
     
     try:
         # Look up the location in the database
-        logger.info(f"employee_location: {employee_location}")
-        logger.info(f"location_name: {Location.location_name}")
-        location = db.query(Location).filter(
-            Location.location_name == employee_location
-        ).first()
-        logger.info(f"location: {location}")
+        location = db.query(Location).filter(Location.location_id == location_id).first()
+        
         if not location:
-            logger.warning(f"Location '{employee_location}' not found, using default department IDs")
+            logger.warning(f"Location ID {location_id} not found, using default department IDs")
             return default_dept_ids
-        logger.info(f"location: {location}")
+        
         # Check if this is a store department
-        if bamboo_department.lower() == "store":
+        if department.lower() == "store":
             # Use the store-specific department ID
             if location.sevenshift_store_id:
                 return [int(location.sevenshift_store_id)]
-        logger.info(f"location: {location}")
+        
         # For other departments, could add additional mapping logic here
         # For example, check for management, admin, etc.
         
         # If no specific mapping matched, return the default
-        logger.info(f"No specific department mapping for '{bamboo_department}' at '{employee_location}', using default")
+        logger.info(f"No specific department mapping for '{department}' at location {location_id}, using default")
         
         return default_dept_ids
         
@@ -81,18 +77,16 @@ async def map_bamboo_department_to_7shifts(bamboo_department: str, employee_loca
         logger.error(f"Error mapping department: {str(e)}")
         return default_dept_ids
 
-async def map_bamboo_location_to_7shifts(bamboo_location: str, db: Session) -> List[int]:
-    """Map BambooHR location to 7shifts location IDs"""
+async def map_location_to_7shifts(location_id: int, db: Session) -> List[int]:
+    """Map internal location ID to 7shifts location IDs"""
     default_location_ids = [668246]
     
     try:
         # Look up the location
-        location = db.query(Location).filter(
-            Location.location_name == bamboo_location  # or `Location.name` if that's your field
-        ).first()
+        location = db.query(Location).filter(Location.location_id == location_id).first()
 
         if not location:
-            logger.warning(f"BambooHR location '{bamboo_location}' not found in database. Using default 7shifts location IDs.")
+            logger.warning(f"Location ID {location_id} not found in database. Using default 7shifts location IDs.")
             return default_location_ids
 
         if location.sevenshift_location_id:
@@ -100,81 +94,43 @@ async def map_bamboo_location_to_7shifts(bamboo_location: str, db: Session) -> L
                 # Convert to int if it's a string in DB
                 return [int(location.sevenshift_location_id)]
             except ValueError:
-                logger.warning(f"Invalid sevenshift_location_id '{location.sevenshift_location_id}' for location '{bamboo_location}'. Using default.")
+                logger.warning(f"Invalid sevenshift_location_id '{location.sevenshift_location_id}' for location ID {location_id}. Using default.")
                 return default_location_ids
 
-        logger.info(f"No sevenshift_location_id found for '{bamboo_location}'. Using default 7shifts location ID.")
+        logger.info(f"No sevenshift_location_id found for location ID {location_id}. Using default 7shifts location ID.")
         return default_location_ids
 
     except Exception as e:
-        logger.exception(f"Error mapping bamboo location '{bamboo_location}': {str(e)}")
+        logger.exception(f"Error mapping location ID {location_id}: {str(e)}")
         return default_location_ids
 
-async def map_bamboo_title_to_7shifts(bamboo_title: str, location_ids: Union[int, List[int]], db: Session) -> List[int]:
-    """Map BambooHR job title to 7shifts role ID(s) based on location"""
+async def map_title_to_7shifts(title_id: int, db: Session) -> List[int]:
+    """Map internal job title ID to 7shifts role ID(s)"""
 
-    from typing import Union
     default_job_title_ids = []
 
     try:
-        bamboo_title = bamboo_title.strip()
-
-        # Handle if location_ids is a list or a single int
-        if isinstance(location_ids, list):
-            query = db.query(JobTitle).filter(
-                JobTitle.title_name.ilike(f"%{bamboo_title}%"),
-                JobTitle.location_id.in_(location_ids)
-            )
-            titles_by_location = db.query(JobTitle).filter(JobTitle.location_id.in_(location_ids)).all()
-            logger.info(f"Titles by location only: {[t.title_name for t in titles_by_location]}")
-
-            titles_by_name = db.query(JobTitle).filter(JobTitle.title_name.ilike(f"%{bamboo_title}%")).all()
-            logger.info(f"Titles by title only: {[t.title_name for t in titles_by_name]}")
-            logger.info(f"query: {query.all()}")
-
-            logger.info(f"location_ids: {location_ids}")
-            logger.info(f"bamboo_title: {bamboo_title}")
-        else:
-            query = db.query(JobTitle).filter(
-                JobTitle.title_name.ilike(f"%{bamboo_title}%"),
-                JobTitle.location_id == location_ids
-            )
-
-        job_title_object = query.first()
-        logger.info(f"job_title_object: {job_title_object}")
-        logger.info(f"job_title_object.sevenshifts_role_id: {job_title_object.sevenshifts_role_id}")
-        if not job_title_object:
-            logger.warning(f"BambooHR job title '{bamboo_title}' not found in job_titles table. Using default.")
+        # Look up the job title by ID
+        job_title = db.query(JobTitle).filter(JobTitle.title_id == title_id).first()
+        
+        if not job_title:
+            logger.warning(f"Job title ID {title_id} not found. Using default role IDs.")
             return default_job_title_ids
 
-        if job_title_object.sevenshifts_role_id:
+        if job_title.sevenshifts_role_id:
             try:
-                return [int(job_title_object.sevenshifts_role_id)]
-            except (ValueError, TypeError):
-                logger.warning(f"Invalid sevenshifts_role_id '{job_title_object.sevenshifts_role_id}' for title '{bamboo_title}'. Using default.")
+                # Convert to int if it's a string in DB
+                return [int(job_title.sevenshifts_role_id)]
+            except ValueError:
+                logger.warning(f"Invalid sevenshifts_role_id '{job_title.sevenshifts_role_id}' for title ID {title_id}. Using default.")
                 return default_job_title_ids
 
-        logger.info(f"No sevenshifts_role_id found for title '{bamboo_title}'. Using default.")
+        logger.info(f"No sevenshifts_role_id found for title ID {title_id}. Using default role IDs.")
         return default_job_title_ids
 
     except Exception as e:
-        logger.exception(f"Error mapping BambooHR job title '{bamboo_title}': {str(e)}")
+        logger.exception(f"Error mapping job title ID {title_id}: {str(e)}")
         return default_job_title_ids
-        
-        
-async def get_internal_location_ids(bamboo_location: str, db: Session) -> Optional[int]:
-    """
-    Get internal location_id from a BambooHR location name
-    """
-    try:
-        location = db.query(Location).filter(Location.location_name == bamboo_location).first()
-        if location:
-            return [location.location_id]
-        logger.warning(f"No internal location_id found for '{bamboo_location}'")
-        return []
-    except Exception as e:
-        logger.exception(f"Error fetching internal location_id for '{bamboo_location}': {str(e)}")
-        return []
 
 def generate_unique_punch_id(db: Session) -> int:
     """
@@ -297,20 +253,19 @@ async def create_seven_shifts_user(
                            "Store")  # Default department if not specified
     employee_job_title = data["fields"].get("job_title")
 
-    # Map BambooHR location to 7shifts location_ids if needed
-    if not location_ids:
-        location_ids = await map_bamboo_location_to_7shifts(employee_location, db)
-        internal_ids = await get_internal_location_ids(employee_location, db)
+    # Map location to 7shifts location_ids if needed
+    if not location_ids and employee_location:
+        location_ids = await map_location_to_7shifts(employee_location, db)
     logger.info(f"location_ids: {location_ids}")
-    logger.info(f"internal_ids: {internal_ids}")
 
-    if not role_ids:
-        role_ids = await map_bamboo_title_to_7shifts(employee_job_title, internal_ids, db)
+    if not role_ids and employee_job_title:
+        # For now, use default role IDs since we don't have title_id mapping
+        role_ids = [1]  # Default role ID
     logger.info(f"role_ids: {role_ids}")
 
-    # Map BambooHR department to 7shifts department_ids if needed
-    if not department_ids:
-        department_ids = await map_bamboo_department_to_7shifts(
+    # Map department to 7shifts department_ids if needed
+    if not department_ids and employee_department:
+        department_ids = await map_department_to_7shifts(
             employee_department, 
             employee_location, 
             db
@@ -371,14 +326,18 @@ async def create_seven_shifts_user(
             #         response_data=response_data,
             #         db=db
             #     )
-            employee = db.query(Employee).filter(Employee.bamboo_hr_id == data.get("id")).first()
-            logger.info(f"employee: {employee}")
-            logger.info(f"this is the current employee.sevenshift_id: {employee.sevenshift_id}")
-            employee.sevenshift_id = str(response_data.get('data', {}).get('id'))
-            employee.punch_id = str(response_data.get('data', {}).get('punch_id'))
-            logger.info(f"this is the new employee.sevenshift_id: {employee.sevenshift_id}")
-            logger.info(f"this is the new employee.punch_id: {employee.punch_id}")
-            db.commit()
+            # Find employee by email since we no longer have bamboo_hr_id
+            employee = db.query(Employee).filter(Employee.email == email).first()
+            if employee:
+                logger.info(f"employee: {employee}")
+                logger.info(f"this is the current employee.sevenshift_id: {employee.sevenshift_id}")
+                employee.sevenshift_id = str(response_data.get('data', {}).get('id'))
+                employee.punch_id = str(response_data.get('data', {}).get('punch_id'))
+                logger.info(f"this is the new employee.sevenshift_id: {employee.sevenshift_id}")
+                logger.info(f"this is the new employee.punch_id: {employee.punch_id}")
+                db.commit()
+            else:
+                logger.warning(f"No employee found with email {email}")
             return response_data
 
         elif response.status_code == 422 and "already exists" in response.text:
@@ -386,10 +345,14 @@ async def create_seven_shifts_user(
             existing_user = get_existing_7shifts_user_by_email(email, location_ids[0])
 
             if existing_user:
-                employee = db.query(Employee).filter(Employee.bamboo_hr_id == data.get("id")).first()
-                employee.sevenshift_id = str(existing_user["id"])
-                employee.punch_id = str(existing_user.get("punch_id", ""))
-                db.commit()
+                # Find employee by email since we no longer have bamboo_hr_id
+                employee = db.query(Employee).filter(Employee.email == email).first()
+                if employee:
+                    employee.sevenshift_id = str(existing_user["id"])
+                    employee.punch_id = str(existing_user.get("punch_id", ""))
+                    db.commit()
+                else:
+                    logger.warning(f"No employee found with email {email}")
                 return {"data": existing_user}
             else:
                 logger.error(f"Failed to fetch existing user from 7shifts for email: {email}")

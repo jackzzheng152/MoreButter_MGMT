@@ -9,7 +9,6 @@ class MatchEmployeesRequest(BaseModel):
 
 class EmployeeBase(BaseModel):
     email: Optional[EmailStr] = None
-    bamboo_hr_id: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     department: Optional[str] = None
@@ -20,7 +19,6 @@ class EmployeeBase(BaseModel):
 
 class EmployeeCreate(EmployeeBase):
     email: EmailStr
-    bamboo_hr_id: str
     first_name: str
     last_name: str
     location_id: Optional[int] = None
@@ -36,7 +34,6 @@ class EmployeeCreate(EmployeeBase):
    
 
 class EmployeeUpdate(EmployeeBase):
-    bamboo_hr_id: Optional[str] = None
     sevenshift_id: Optional[str] = None
     current_compensation: Optional[float] = None
     email: Optional[EmailStr] = None
@@ -65,7 +62,6 @@ class Employee(EmployeeBase):
 class EmployeeResponse(BaseModel):
     employee_id: int
     email: EmailStr
-    bamboo_hr_id: Optional[str]
     first_name: Optional[str]
     last_name: Optional[str]
     department: Optional[str]

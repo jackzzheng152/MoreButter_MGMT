@@ -5,39 +5,14 @@ from pydantic import BaseModel
 
 from app.database import get_db
 from app.models.employee import Employee
-from app.services import bamboo_hr, seven_shifts
+from app.services import seven_shifts
 
 router = APIRouter()
-
-class BambooHRRemoveRequest(BaseModel):
-    bamboo_hr_id: str
 
 class SevenShiftsRemoveRequest(BaseModel):
     seven_shift_id: str
 
-@router.post("/bamboohr/remove")
-async def remove_from_bamboohr(request: BambooHRRemoveRequest, db: Session = Depends(get_db)):
-    """Remove an employee from BambooHR"""
-    try:
-        # Update employment status to Terminated
-        result = bamboo_hr.update_employment_status(
-            bamboo_hr_id=request.bamboo_hr_id,
-            db=db,
-            status_date=datetime.now().strftime("%Y-%m-%d"),
-            employment_status="Terminated",
-            termination_type="Termination (Involuntary)",
-            termination_reason="Other employment",
-            eligible_for_rehire="No",
-            termination_regrettable="No"
-        )
-        
-        if not result:
-            raise HTTPException(status_code=400, detail="Failed to remove employee from BambooHR")
-            
-        return {"message": "Successfully removed employee from BambooHR"}
-    except Exception as e:
-        print("ERROR: ", e)
-        raise HTTPException(status_code=500, detail=str(e))
+# BambooHR removal route removed - direct to 7shifts
 
 @router.post("/7shifts/remove")
 async def remove_from_7shifts(request: SevenShiftsRemoveRequest, db: Session = Depends(get_db)):
